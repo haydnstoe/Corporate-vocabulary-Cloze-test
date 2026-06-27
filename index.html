@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>UK Restructuring & Insolvency Law – Cloze Test</title>
+  <title>Restructuring & Insolvency Law – Cloze Test</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -34,8 +34,8 @@
       color: red;
     }
     button {
-      margin-top: 20px;
-      padding: 8px 16px;
+      margin-top: 10px;
+      padding: 6px 12px;
       font-size: 14px;
       cursor: pointer;
     }
@@ -59,7 +59,7 @@
 </head>
 <body>
   <h1>UK Restructuring & Insolvency Law – Cloze Test</h1>
-  <p>Choose the best term to complete each sentence. Only one answer is correct. Options are jumbled on each page load.</p>
+  <p>Choose the best term to complete each sentence. Only one answer is correct.</p>
 
   <!-- Progress bar -->
   <div id="progressContainer">
@@ -67,8 +67,6 @@
   </div>
 
   <div id="quiz"></div>
-  <button id="checkBtn">Submit Answers</button>
-  <div id="score" class="result"></div>
 
   <script>
     const questions = [
@@ -182,6 +180,15 @@
       return array;
     }
 
+    function updateProgressBar() {
+      const answered = questions.filter((_, index) =>
+        document.querySelector('input[name="q' + index + '"]:checked')
+      ).length;
+
+      const percentage = (answered / questions.length) * 100;
+      document.getElementById('progressBar').style.width = percentage + "%";
+    }
+
     function buildQuiz() {
       const quizDiv = document.getElementById('quiz');
       quizDiv.innerHTML = '';
@@ -215,55 +222,39 @@
           optionsDiv.appendChild(label);
         });
 
+        const submitBtn = document.createElement('button');
+        submitBtn.textContent = "Submit Answer";
+        submitBtn.addEventListener('click', () => {
+          const selected = document.querySelector('input[name="q' + index + '"]:checked');
+          const feedback = document.getElementById('feedback' + index);
+
+          if (!selected) {
+            feedback.textContent = "No answer selected.";
+            feedback.className = "feedback incorrect";
+            return;
+          }
+
+          if (selected.value === q.correct) {
+            feedback.textContent = "Correct!";
+            feedback.className = "feedback correct";
+          } else {
+            feedback.textContent = "Incorrect — correct answer: " + q.correct;
+            feedback.className = "feedback incorrect";
+          }
+
+          updateProgressBar();
+        });
+
         const feedback = document.createElement('div');
         feedback.className = 'feedback';
         feedback.id = 'feedback' + index;
 
         questionDiv.appendChild(optionsDiv);
+        questionDiv.appendChild(submitBtn);
         questionDiv.appendChild(feedback);
         quizDiv.appendChild(questionDiv);
       });
     }
-
-    function updateProgressBar() {
-      const answered = questions.filter((_, index) =>
-        document.querySelector('input[name="q' + index + '"]:checked')
-      ).length;
-
-      const percentage = (answered / questions.length) * 100;
-      document.getElementById('progressBar').style.width = percentage + "%";
-    }
-
-    function checkAnswers() {
-      let score = 0;
-
-      questions.forEach((q, index) => {
-        const selected = document.querySelector('input[name="q' + index + '"]:checked');
-        const feedback = document.getElementById('feedback' + index);
-
-        if (!selected) {
-          feedback.textContent = "No answer selected.";
-          feedback.className = "feedback incorrect";
-          return;
-        }
-
-        if (selected.value === q.correct) {
-          score++;
-          feedback.textContent = "Correct!";
-          feedback.className = "feedback correct";
-        } else {
-          feedback.textContent = "Incorrect — correct answer: " + q.correct;
-          feedback.className = "feedback incorrect";
-        }
-      });
-
-      updateProgressBar();
-
-      document.getElementById('score').textContent =
-        "You scored " + score + " out of " + questions.length + ".";
-    }
-
-    document.getElementById('checkBtn').addEventListener('click', checkAnswers);
 
     buildQuiz();
   </script>
