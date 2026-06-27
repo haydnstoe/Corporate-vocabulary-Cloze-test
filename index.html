@@ -1,22 +1,299 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Interactive Quiz</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>UK Restructuring & Insolvency Law – Cloze Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      margin-bottom: 5px;
+    }
+    .question {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .options {
+      margin-top: 8px;
+    }
+    .options label {
+      display: block;
+      margin-bottom: 4px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    button {
+      margin-top: 20px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <h1>HTML Basics Quiz</h1>
-  <form id="quiz-form">
-    <div>
-      <p>1. What does HTML stand for?</p>
-      <input type="radio" name="q1" value="a"> Home Tool Markup Language<br>
-      <input type="radio" name="q1" value="b"> HyperText Markup Language<br>
-      <input type="radio" name="q1" value="c"> Hyperlink Text Management Language<br>
-    </div>
-    <button type="button" onclick="submitQuiz()">Submit</button>
-  </form>
-  <div id="result"></div>
+  <h1>UK Restructuring & Insolvency Law – Cloze Test</h1>
+  <p>Choose the best term to complete each sentence. Only one answer is correct. Options are jumbled on each page load.</p>
 
-  <script src="script.js"></script>
+  <div id="quiz"></div>
+  <button id="checkBtn">Check Answers</button>
+  <div id="score" class="result"></div>
+
+  <script>
+    const questions = [
+      {
+        text: "An insolvent company may enter ______, a court-supervised process where an administrator takes control to rescue it or achieve a better result for creditors than liquidation.",
+        correct: "Administration",
+        distractors: [
+          "Compulsory Liquidation",
+          "Company Voluntary Arrangement (CVA)",
+          "Members’ Voluntary Liquidation (MVL)"
+        ]
+      },
+      {
+        text: "A ______ is a licensed insolvency practitioner appointed by a debenture holder to realise secured assets; this role is largely obsolete for debentures created after September 2003.",
+        correct: "Administrative Receiver",
+        distractors: [
+          "Insolvency Practitioner (IP)",
+          "Administrator",
+          "Liquidator"
+        ]
+      },
+      {
+        text: "A ______ is a binding agreement between a company and its unsecured creditors to pay only part of what is owed, supervised by an insolvency practitioner.",
+        correct: "Company Voluntary Arrangement (CVA)",
+        distractors: [
+          "Creditors’ Voluntary Liquidation (CVL)",
+          "Members’ Voluntary Liquidation (MVL)",
+          "Pre-pack Administration"
+        ]
+      },
+      {
+        text: "______ is a court-ordered winding up of a company, usually initiated by a creditor via a winding-up petition.",
+        correct: "Compulsory Liquidation",
+        distractors: [
+          "Creditors’ Voluntary Liquidation (CVL)",
+          "Members’ Voluntary Liquidation (MVL)",
+          "Pre-pack Administration"
+        ]
+      },
+      {
+        text: "In a ______, directors initiate liquidation when a company is insolvent and cannot pay its debts.",
+        correct: "Creditors’ Voluntary Liquidation (CVL)",
+        distractors: [
+          "Members’ Voluntary Liquidation (MVL)",
+          "Compulsory Liquidation",
+          "Administration"
+        ]
+      },
+      {
+        text: "A ______ is a solvent liquidation where directors declare the company can pay all debts within 12 months.",
+        correct: "Members’ Voluntary Liquidation (MVL)",
+        distractors: [
+          "Creditors’ Voluntary Liquidation (CVL)",
+          "Compulsory Liquidation",
+          "Pre-pack Administration"
+        ]
+      },
+      {
+        text: "A ______ is a security interest over a company’s changing assets (such as stock), which crystallises upon certain events like administration.",
+        correct: "Floating Charge",
+        distractors: [
+          "Fixed Charge",
+          "Debenture",
+          "Prescribed Part"
+        ]
+      },
+      {
+        text: "A ______ is a security interest over specific, identifiable assets (such as land or equipment) that cannot be sold without the charge holder’s consent.",
+        correct: "Fixed Charge",
+        distractors: [
+          "Floating Charge",
+          "Debenture",
+          "Set-off"
+        ]
+      },
+      {
+        text: "______ is the point at which a floating charge becomes fixed, restricting the company from dealing with the charged assets.",
+        correct: "Crystallisation",
+        distractors: [
+          "Moratorium",
+          "Set-off",
+          "Preference"
+        ]
+      },
+      {
+        text: "A ______ is a legal document granting security (often including fixed and floating charges) to a lender over a company’s assets.",
+        correct: "Debenture",
+        distractors: [
+          "Statement of Affairs",
+          "Winding-up Petition",
+          "Director’s Disqualification Order"
+        ]
+      },
+      {
+        text: "A ______ is a legal pause on creditor actions (such as enforcement or legal proceedings) to allow a company time to restructure, often used with CVAs or new restructuring plans.",
+        correct: "Moratorium",
+        distractors: [
+          "Crystallisation",
+          "Set-off",
+          "Prescribed Part"
+        ]
+      },
+      {
+        text: "In a ______, the sale of a company’s business or assets is negotiated before administrators are appointed and executed immediately after appointment.",
+        correct: "Pre-pack Administration",
+        distractors: [
+          "Company Voluntary Arrangement (CVA)",
+          "Members’ Voluntary Liquidation (MVL)",
+          "Creditors’ Voluntary Liquidation (CVL)"
+        ]
+      },
+      {
+        text: "A ______ is a court order banning an individual from acting as a company director for up to 15 years due to misconduct.",
+        correct: "Director’s Disqualification Order",
+        distractors: [
+          "Winding-up Petition",
+          "Statement of Affairs",
+          "Debenture"
+        ]
+      },
+      {
+        text: "An ______ is a licensed professional authorised to act in formal insolvency procedures such as administration, liquidation, or CVAs.",
+        correct: "Insolvency Practitioner (IP)",
+        distractors: [
+          "Administrative Receiver",
+          "Company Secretary",
+          "Court Registrar"
+        ]
+      },
+      {
+        text: "A ______ is a transaction that puts a creditor in a better position than they would be in liquidation, which can be reversed if made before insolvency.",
+        correct: "Preference",
+        distractors: [
+          "Transaction at an Undervalue",
+          "Set-off",
+          "Moratorium"
+        ]
+      },
+      {
+        text: "A ______ is a sale or gift of assets for less than their worth prior to insolvency, which can be challenged and reversed by an office holder.",
+        correct: "Transaction at an Undervalue",
+        distractors: [
+          "Preference",
+          "Pre-pack Administration",
+          "Floating Charge"
+        ]
+      },
+      {
+        text: "The ______ is a portion of floating charge realisations (up to £800,000) set aside for unsecured creditors.",
+        correct: "Prescribed Part",
+        distractors: [
+          "Fixed Charge",
+          "Statement of Affairs",
+          "Moratorium"
+        ]
+      },
+      {
+        text: "______ is a mandatory rule in liquidation or administration where mutual debts between the company and a creditor are netted off.",
+        correct: "Set-off",
+        distractors: [
+          "Preference",
+          "Crystallisation",
+          "Moratorium"
+        ]
+      },
+      {
+        text: "A ______ is a document detailing a company’s assets, liabilities, and creditors, required in most insolvency procedures.",
+        correct: "Statement of Affairs",
+        distractors: [
+          "Debenture",
+          "Winding-up Petition",
+          "Director’s Disqualification Order"
+        ]
+      },
+      {
+        text: "A ______ is a formal request to the court to compulsorily liquidate a company, typically filed by a creditor owed more than £750.",
+        correct: "Winding-up Petition",
+        distractors: [
+          "Statement of Affairs",
+          "Director’s Disqualification Order",
+          "Company Voluntary Arrangement (CVA)"
+        ]
+      }
+    ];
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function buildQuiz() {
+      const quizDiv = document.getElementById('quiz');
+      quizDiv.innerHTML = '';
+
+      questions.forEach((q, index) => {
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+
+        const p = document.createElement('p');
+        p.textContent = (index + 1) + '. ' + q.text;
+        questionDiv.appendChild(p);
+
+        const optionsDiv = document.createElement('div');
+        optionsDiv.className = 'options';
+
+        const allOptions = shuffle([q.correct, ...q.distractors]);
+
+        allOptions.forEach(option => {
+          const id = 'q' + index + '_' + option;
+
+          const label = document.createElement('label');
+          const input = document.createElement('input');
+          input.type = 'radio';
+          input.name = 'q' + index;
+          input.value = option;
+          input.id = id;
+
+          label.htmlFor = id;
+          label.textContent = option;
+
+          label.prepend(input);
+          optionsDiv.appendChild(label);
+        });
+
+        questionDiv.appendChild(optionsDiv);
+        quizDiv.appendChild(questionDiv);
+      });
+    }
+
+    function checkAnswers() {
+      let score = 0;
+
+      questions.forEach((q, index) => {
+        const selected = document.querySelector('input[name="q' + index + '"]:checked');
+        if (selected && selected.value === q.correct) {
+          score++;
+        }
+      });
+
+      const scoreDiv = document.getElementById('score');
+      scoreDiv.textContent = 'You scored ' + score + ' out of ' + questions.length + '.';
+    }
+
+    document.getElementById('checkBtn').addEventListener('click', checkAnswers);
+
+    // Build quiz on page load with jumbled options
+    buildQuiz();
+  </script>
 </body>
-</html>
